@@ -21,7 +21,7 @@ class CorsMiddleware
             $origin = $request->headers->get('Origin');
 
             // Check if the origin matches the allowed origin
-            if ($origin === 'http://localhost:3000') {
+            if ($origin === 'http://localhost:5173') {
                 // Set CORS headers
                 return $next($request)
                     ->header('Access-Control-Allow-Origin', $origin)

@@ -1,56 +1,84 @@
+import axios from "axios";
+
+const apiBaseUrl = "http://localhost:8000"; // Replace this with your Laravel API URL
+
 export const PengeluaranBelanjaLogic = {
-    // Initialize data or any logic needed
-    setupData(vm) {
-      console.log("Setting up Pengeluaran Belanja Data");
-      // Example: Initialize data or fetch data from API
-      // vm.expenses = ... (fetch expenses from API or local storage)
-    },
-  
-    // Toggle showing the add expense form
-    showAddExpenseForm(vm) {
-      vm.isAddingExpense = true; // Show the form
-    },
-  
-    // Cancel adding an expense and reset the form
-    cancelAddExpense(vm) {
-      vm.isAddingExpense = false; // Hide the form
-      vm.resetNewExpense(); // Reset the form fields
-    },
-  
-    // Add the new expense to the expenses list
-    addExpense(vm) {
-      const newExpense = {
-        ...vm.newExpense,
-        id: vm.expenses.length + 1, // Generate a new ID based on the length of the list
-      };
-      vm.expenses.push(newExpense);
-  
-      // Reset form fields
+  // Fetch the expenses from the API
+  async setupData(vm) {
+    try {
+      const response = await axios.get(`${apiBaseUrl}/api/admin/pengeluaran-belanja`);
+      vm.expenses = response.data; // Set the fetched expenses to the component's data
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  },
+
+  // Toggle showing the add expense form
+  showAddExpenseForm(vm) {
+    vm.isAddingExpense = true;
+    vm.isEditing = false; // Reset editing flag when opening form
+    vm.resetNewExpense();
+  },
+
+  // Cancel adding an expense and reset the form
+  cancelAddExpense(vm) {
+    vm.isAddingExpense = false;
+    vm.isEditing = false;
+    vm.resetNewExpense();
+  },
+
+  // Add a new expense by making an API call to the backend
+  async addExpense(vm) {
+    try {
+      const response = await axios.post(`${apiBaseUrl}/api/admin/pengeluaran-belanja`, vm.newExpense);
+      vm.expenses.push(response.data); // Add the new expense to the list
       vm.resetNewExpense();
-      vm.isAddingExpense = false; // Hide the form after adding the expense
-    },
-  
-    // Reset the new expense form fields
-    resetNewExpense(vm) {
-      vm.newExpense.name = "";
-      vm.newExpense.quantity = 0;
-      vm.newExpense.price = 0;
-      vm.newExpense.date = "";
-    },
-  
-    // Edit an expense (can be customized with a real form or logic)
-    editExpense(id) {
-      alert(`Edit expense with ID: ${id}`);
-    },
-  
-    // Delete an expense by ID
-    deleteExpense(vm, id) {
-      vm.expenses = vm.expenses.filter((expense) => expense.id !== id);
-    },
-  
-    // Currency filter for formatting values
-    currency(value) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
-    },
-  };
-  
+      vm.isAddingExpense = false;
+    } catch (error) {
+      console.error("Error adding expense:", error);
+    }
+  },
+
+  // Reset the new expense form fields
+  resetNewExpense(vm) {
+    vm.newExpense = {
+      id: null,
+      name: "",
+      quantity: 0,
+      price: 0,
+      date: "",
+    };
+  },
+
+  // Edit an expense (update logic with PUT request)
+  async editExpense(id, vm) {
+    try {
+      const response = await axios.put(`${apiBaseUrl}/api/admin/pengeluaran-belanja/${id}`, vm.newExpense);
+      // Find and update the expense in the local list
+      const index = vm.expenses.findIndex(exp => exp.id === id);
+      if (index !== -1) {
+        vm.expenses[index] = response.data; // Replace the old data with updated one
+      }
+      vm.resetNewExpense();
+      vm.isAddingExpense = false;
+      vm.isEditing = false;
+    } catch (error) {
+      console.error("Error editing expense:", error);
+    }
+  },
+
+  // Delete an expense by making an API call to delete it from the backend
+  async deleteExpense(vm, id) {
+    try {
+      await axios.delete(`${apiBaseUrl}/api/admin/pengeluaran-belanja/${id}`);
+      vm.expenses = vm.expenses.filter((expense) => expense.id !== id); // Remove from local state
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+    }
+  },
+
+  // Currency filter for formatting values
+  currency(value) {
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(value);
+  },
+};

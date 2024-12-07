@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2); // Harga menu
             $table->string('category'); // Kategori menu (makanan/minuman)
             $table->text('description')->nullable(); // Deskripsi menu
+            $table->string('image');
             $table->timestamps();
         });
     }

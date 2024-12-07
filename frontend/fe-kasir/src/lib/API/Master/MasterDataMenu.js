@@ -1,58 +1,112 @@
-// src/views/Admin/MasterDataMenu.js
+import axios from "axios";
+import Navbar from "../../../components/Navbar.vue";
 
 export default {
-    data() {
-      return {
-        menus: [
-          { id: 1, name: "Menu 1", category: "Category 1", price: 10000, image: "menu1.jpg" },
-          { id: 2, name: "Menu 2", category: "Category 2", price: 15000, image: "menu2.jpg" },
-        ],
-        newMenu: {
-          name: "",
-          category: "",
-          price: "",
-          image: null,
-        },
-        isAddingMenu: false, // Flag to toggle form visibility
+  name: "MasterDataMenu",
+  components: {
+    Navbar,
+  },
+  data() {
+    return {
+      menus: [],
+      newMenu: {
+        id: null,
+        name: "",
+        category: "",
+        price: "",
+        image: null,
+        description: "",
+      },
+      isAddingMenu: false,
+      apiUrl: "http://localhost:8000", // Your API base URL
+    };
+  },
+  mounted() {
+    this.fetchMenus(); // Fetch menus when the component is mounted
+  },
+  methods: {
+    // Fetch menus from the backend
+    async fetchMenus() {
+      try {
+        const response = await axios.get(`${this.apiUrl}/api/admin/menus`);
+        this.menus = response.data;
+      } catch (error) {
+        console.error("Error fetching menus:", error);
+      }
+    },
+
+    // Show the add menu form
+    showAddMenuForm() {
+      this.isAddingMenu = true;
+      this.resetNewMenu();
+    },
+
+    // Cancel adding or editing menu
+    cancelAddMenu() {
+      this.isAddingMenu = false;
+      this.resetNewMenu();
+    },
+
+    // Reset the newMenu data
+    resetNewMenu() {
+      this.newMenu = {
+        id: null,
+        name: "",
+        category: "",
+        price: "",
+        image: null,
+        description: "",
       };
     },
-    methods: {
-      showAddMenuForm() {
-        this.isAddingMenu = true; // Show the form
-      },
-      cancelAddMenu() {
-        this.isAddingMenu = false; // Hide the form
-        this.resetNewMenu(); // Reset the form data
-      },
-      addMenu() {
-        const newMenu = {
-          ...this.newMenu,
-          id: this.menus.length + 1,
-        };
-        this.menus.push(newMenu);
-  
-        // Reset form fields
+
+    // Save or update a menu
+    async saveMenu() {
+      const formData = new FormData();
+      formData.append("name", this.newMenu.name);
+      formData.append("category", this.newMenu.category);
+      formData.append("price", this.newMenu.price);
+      formData.append("description", this.newMenu.description);
+      if (this.newMenu.image) {
+        formData.append("image", this.newMenu.image);
+      }
+    
+      try {
+        // Add new menu (always use POST)
+        const response = await axios.post(`${this.apiUrl}/api/admin/menus`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        // Add the new menu to the list
+        this.menus.push(response.data);
+    
+        // Reset form after submission
         this.resetNewMenu();
-        this.isAddingMenu = false; // Hide the form after adding the menu
-      },
-      resetNewMenu() {
-        this.newMenu.name = "";
-        this.newMenu.category = "";
-        this.newMenu.price = "";
-        this.newMenu.image = null;
-      },
-      editMenu(id) {
-        alert(`Edit menu with ID: ${id}`);
-      },
-      deleteMenu(id) {
-        this.menus = this.menus.filter((menu) => menu.id !== id);
-      },
-      handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (file) {
-          this.newMenu.image = file.name; // Store image file name (you can modify this logic for actual image upload)
-        }
-      },
+        this.isAddingMenu = false;
+      } catch (error) {
+        console.error("Error saving menu:", error);
+      }
     },
-  };
-  
+    
+    // Delete a menu
+    async deleteMenu(id) {
+      if (confirm("Are you sure you want to delete this menu?")) {
+        try {
+          await axios.delete(`${this.apiUrl}/api/admin/menus/${id}`);
+          this.menus = this.menus.filter(menu => menu.id !== id);
+        } catch (error) {
+          console.error("Error deleting menu:", error);
+        }
+      }
+    },
+
+    // Handle image upload
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newMenu.image = file; // Store the file object for later upload
+      }
+    },
+  },
+};

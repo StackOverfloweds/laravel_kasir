@@ -6,8 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 // use App\Models
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -50,5 +51,25 @@ class User extends Authenticatable
     public function salesTransactions()
     {
         return $this->hasMany(SalesTransaction::class);
+    }
+
+     /**
+     * Get the unique identifier for the user.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // Usually the primary key (ID)
+    }
+
+    /**
+     * Return a key value array, which will be stored in the JWT payload.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return []; // Add any custom claims here if needed
     }
 }

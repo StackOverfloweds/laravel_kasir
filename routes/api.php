@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LogoutController;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\PengeluaranBelanjaController;
 use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Admin\SalesTransactionController;
 
@@ -18,19 +19,23 @@ Route::prefix('auth')->group(function () {
 
     // Rute register
     Route::post('register', [RegisterController::class, 'register'])->name('register');
+    Route::patch('register/{id}', [RegisterController::class, 'update'])->name('update');
+    Route::delete('register/{id}', [RegisterController::class, 'deleteUser'])->name('delete');
+
+
 
     // Rute logout
-    Route::post('logout', [LogoutController::class, 'logout'])->name('logout')->middleware('auth.jwt');
+    Route::delete('logout', [LogoutController::class, 'logout'])->name('logout');
 });
 
-Route::prefix('admin')->middleware('auth.jwt')->group(function () {
+Route::get('/admin/users', [UserController::class, 'index'])->name('users.store');  // Menambahkan user baru
+
+Route::prefix('admin')->group(function () {
     // Manajemen User
-    Route::post('users', [UserController::class, 'store'])->name('users.store');  // Menambahkan user baru
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show'); // Menampilkan detail user
-    Route::patch('users/{id}', [UserController::class, 'update'])->name('users.update'); // Mengupdate user
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy'); // Menghapus user
 
     // Manajemen Menu
+    Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
     Route::post('menus', [MenuController::class, 'store'])->name('menus.store');  // Menambahkan menu baru
     Route::get('menus/{id}', [MenuController::class, 'show'])->name('menus.show'); // Menampilkan detail menu
     Route::patch('menus/{id}', [MenuController::class, 'update'])->name('menus.update'); // Mengupdate menu
@@ -47,4 +52,12 @@ Route::prefix('admin')->middleware('auth.jwt')->group(function () {
     Route::get('sales-transactions/{id}', [SalesTransactionController::class, 'show'])->name('sales-transactions.show'); // Menampilkan transaksi penjualan
     Route::patch('sales-transactions/{id}', [SalesTransactionController::class, 'update'])->name('sales-transactions.update'); // Mengupdate transaksi penjualan
     Route::delete('sales-transactions/{id}', [SalesTransactionController::class, 'destroy'])->name('sales-transactions.destroy'); // Menghapus transaksi penjualan
+
+    Route::prefix('pengeluaran-belanja')->group(function () {
+        Route::get('/', [PengeluaranBelanjaController::class, 'index']); // Get all expenses
+        Route::post('/', [PengeluaranBelanjaController::class, 'store']); // Add a new expense
+        Route::get('{id}', [PengeluaranBelanjaController::class, 'show']); // Get a specific expense
+        Route::put('{id}', [PengeluaranBelanjaController::class, 'update']); // Update an expense
+        Route::delete('{id}', [PengeluaranBelanjaController::class, 'destroy']); // Delete an expense
+    });
 });

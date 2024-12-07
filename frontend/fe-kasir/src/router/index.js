@@ -9,7 +9,8 @@ import MasterDataMenu from '../views/Admin/Master/MasterDataMenu.vue'
 
 // Pengeluaran Routes (Expenses)
 import PengeluaranBelanja from '../views/Admin/Pengeluaran/PengeluaranBelanja.vue'
-import  TransaksiBelanja  from '../views/Admin/Transaksi/TransaksiBelanja.vue'
+import TransaksiBelanja from '../views/Admin/Transaksi/TransaksiBelanja.vue'
+
 // Define Routes
 const routes = [
   // Login route (this will be the root route)
@@ -24,21 +25,25 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard, // Admin Dashboard
+    meta: { requiresAuth: true }, // Add a custom meta field for authentication check
   },
   {
     path: '/master-data/admin',
     name: 'MasterDataAdmin',
     component: MasterDataAdmin, // Master Data Admin Page
+    meta: { requiresAuth: true }, // Protected route
   },
   {
     path: '/master-data/category',
     name: 'MasterDataCategory',
     component: MasterDataCategory, // Master Data Category Page
+    meta: { requiresAuth: true }, // Protected route
   },
   {
     path: '/master-data/menu',
     name: 'MasterDataMenu',
     component: MasterDataMenu, // Master Data Menu Page
+    meta: { requiresAuth: true }, // Protected route
   },
 
   // Pengeluaran Routes (Expenses)
@@ -46,6 +51,7 @@ const routes = [
     path: '/pengeluaran/belanja',
     name: 'PengeluaranBelanja',
     component: PengeluaranBelanja, // Pengeluaran Belanja (Expenses) Page
+    meta: { requiresAuth: true }, // Protected route
   },
 
   // Transaksi Belanja (Expense Transaction)
@@ -53,6 +59,7 @@ const routes = [
     path: '/transaksi/belanja',
     name: 'TransaksiBelanja',
     component: TransaksiBelanja, // Transaction Recap Page
+    meta: { requiresAuth: true }, // Protected route
   },
 
   // Optionally, redirect any unknown routes to login
@@ -66,6 +73,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL), // Uses history mode for cleaner URLs
   routes, // Add routes to the router
+})
+
+// Navigation Guard to protect routes that require authentication
+router.beforeEach((to, from, next) => {
+  const token = sessionStorage.getItem('authToken'); // Get token from sessionStorage
+  
+  if (to.meta.requiresAuth && !token) {
+    // If the route requires authentication but no token is found, redirect to Login
+    next('/');
+  } else {
+    // Allow navigation to the requested route
+    next();
+  }
 })
 
 export default router

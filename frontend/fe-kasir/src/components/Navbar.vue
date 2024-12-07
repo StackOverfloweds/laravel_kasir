@@ -14,7 +14,6 @@
         <ul v-if="isDropdownVisible" class="dropdown-menu">
           <!-- Master Data sublinks -->
           <li><router-link to="/master-data/admin" class="nav-link">Data Pegawai</router-link></li>
-          <li><router-link to="/master-data/category" class="nav-link">Data Kategori</router-link></li>
           <li><router-link to="/master-data/menu" class="nav-link">Data Menu</router-link></li>
         </ul>
       </li>
@@ -32,12 +31,14 @@
       <!-- Pengeluaran Belanja link -->
       <li><router-link to="/pengeluaran/belanja" class="nav-link">Pengeluaran Belanja</router-link></li>
       <!-- Logout link -->
-      <li><router-link to="/logout" class="nav-link">Logout</router-link></li>
+      <li><a href="#" @click="logout" class="nav-link">Logout</a></li>
     </ul>
   </nav>
 </template>
 
 <script>
+import LogoutUser from '../lib/API/Auth/LogoutUser'; // Import LogoutUser class
+
 export default {
   name: "Navbar",
   data() {
@@ -53,19 +54,35 @@ export default {
     toggleTransactionDropdown() {
       this.isTransactionDropdownVisible = !this.isTransactionDropdownVisible; // Toggle the Laporan Transaksi dropdown menu
     },
+    async logout() {
+      try {
+        // Call the logout method to invalidate the token
+        const response = await LogoutUser.Logout(); 
+
+        // Optionally, redirect to the login page
+        this.$router.push('/'); // Navigate to login page after logout
+
+        // Show a success message
+        alert(response.message || 'Successfully logged out');
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('An error occurred while logging out.');
+      }
+    }
   },
 };
 </script>
 
 <style scoped>
+/* Full height navbar */
 .navbar {
   background-color: #f1f1f1;
   width: 250px;
+  height: 100vh; /* Full height */
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
+  justify-content: space-between; /* Ensure navbar items are spaced out */
 }
 
 .logo-container {
@@ -89,6 +106,7 @@ export default {
 .nav-links {
   list-style-type: none;
   padding: 0;
+  flex-grow: 1; /* Allow the navigation links to fill available space */
 }
 
 .nav-link {
@@ -127,6 +145,11 @@ export default {
 
 .dropdown-menu .nav-link:hover {
   background-color: #e6e6e6;
+}
+
+/* Logout link at the bottom */
+.nav-links li:last-child {
+  margin-top: auto; /* Push the logout link to the bottom */
 }
 
 /* Responsive Styles */
