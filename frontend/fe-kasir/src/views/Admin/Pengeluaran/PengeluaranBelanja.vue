@@ -2,7 +2,7 @@
     <div class="wrapper d-flex">
       <!-- Sidebar (Navbar) -->
       <Navbar />
-  
+    
       <!-- Main Content Area -->
       <div class="content flex-grow-1 mt-5">
         <div class="container">
@@ -10,11 +10,11 @@
           <button class="btn btn-primary mb-3" @click="showAddExpenseForm">
             Tambah Bahan Belanja
           </button>
-  
-          <!-- Conditionally Rendered Form for Adding Item -->
+    
+          <!-- Conditionally Rendered Form for Adding or Editing Item -->
           <div v-if="isAddingExpense" class="mb-4">
-            <h3>Tambah Bahan Belanja</h3>
-            <form @submit.prevent="addExpense">
+            <h3>{{ isEditing ? "Edit Bahan Belanja" : "Tambah Bahan Belanja" }}</h3>
+            <form @submit.prevent="isEditing ? updateExpense() : addExpense()">
               <div class="mb-3">
                 <label for="itemName" class="form-label">Nama Bahan</label>
                 <input
@@ -55,13 +55,13 @@
                   required
                 />
               </div>
-              <button type="submit" class="btn btn-success">Tambah Belanja</button>
+              <button type="submit" class="btn btn-success">{{ isEditing ? "Update" : "Tambah Belanja" }}</button>
               <button type="button" class="btn btn-secondary ms-2" @click="cancelAddExpense">
                 Batal
               </button>
             </form>
           </div>
-  
+    
           <!-- Table of Expenses -->
           <table class="table table-striped" v-if="!isAddingExpense">
             <thead>
@@ -96,7 +96,7 @@
   </template>
   
   <script>
- import Navbar from "../../../components/Navbar.vue";
+  import Navbar from "../../../components/Navbar.vue";
   import { PengeluaranBelanjaLogic } from "../../../lib/API/Pengeluaran/PengeluaranBelanja";
   
   export default {
@@ -106,34 +106,45 @@
     },
     data() {
       return {
-        expenses: [
-          { id: 1, name: "Gula Pasir", quantity: 10, price: 5000, date: "2024-12-01" },
-          { id: 2, name: "Minyak Goreng", quantity: 5, price: 15000, date: "2024-12-02" },
-        ],
+        expenses: [],
         newExpense: {
+          id: null,
           name: "",
           quantity: 0,
           price: 0,
           date: "",
         },
         isAddingExpense: false, // Flag to toggle form visibility
+        isEditing: false, // Flag to check if we're editing
       };
     },
     methods: {
       showAddExpenseForm() {
-        PengeluaranBelanjaLogic.showAddExpenseForm(this);
+        this.isAddingExpense = true;
+        this.isEditing = false;
+        this.resetNewExpense();
       },
       cancelAddExpense() {
-        PengeluaranBelanjaLogic.cancelAddExpense(this);
+        this.isAddingExpense = false;
+        this.isEditing = false;
+        this.resetNewExpense();
       },
       addExpense() {
         PengeluaranBelanjaLogic.addExpense(this);
       },
       resetNewExpense() {
-        PengeluaranBelanjaLogic.resetNewExpense(this);
+        this.newExpense = { id: null, name: "", quantity: 0, price: 0, date: "" };
       },
       editExpense(id) {
-        PengeluaranBelanjaLogic.editExpense(id);
+        const expense = this.expenses.find(exp => exp.id === id);
+        if (expense) {
+          this.newExpense = { ...expense };
+          this.isAddingExpense = true;
+          this.isEditing = true;
+        }
+      },
+      updateExpense() {
+        PengeluaranBelanjaLogic.editExpense(this.newExpense.id, this);
       },
       deleteExpense(id) {
         PengeluaranBelanjaLogic.deleteExpense(this, id);
@@ -145,10 +156,11 @@
       },
     },
     created() {
-      PengeluaranBelanjaLogic.setupData(this); // Call logic setup when component is created
+      PengeluaranBelanjaLogic.setupData(this);
     },
   };
   </script>
+  
   
   <style scoped>
   /* Wrapper for layout: navbar and content side by side */

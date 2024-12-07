@@ -14,7 +14,6 @@
         <ul v-if="isDropdownVisible" class="dropdown-menu">
           <!-- Master Data sublinks -->
           <li><router-link to="/master-data/admin" class="nav-link">Data Pegawai</router-link></li>
-          <li><router-link to="/master-data/category" class="nav-link">Data Kategori</router-link></li>
           <li><router-link to="/master-data/menu" class="nav-link">Data Menu</router-link></li>
         </ul>
       </li>
@@ -75,14 +74,15 @@ export default {
 </script>
 
 <style scoped>
+/* Full height navbar */
 .navbar {
   background-color: #f1f1f1;
   width: 250px;
+  height: 100vh; /* Full height */
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
+  justify-content: space-between; /* Ensure navbar items are spaced out */
 }
 
 .logo-container {
@@ -106,6 +106,7 @@ export default {
 .nav-links {
   list-style-type: none;
   padding: 0;
+  flex-grow: 1; /* Allow the navigation links to fill available space */
 }
 
 .nav-link {
@@ -144,6 +145,11 @@ export default {
 
 .dropdown-menu .nav-link:hover {
   background-color: #e6e6e6;
+}
+
+/* Logout link at the bottom */
+.nav-links li:last-child {
+  margin-top: auto; /* Push the logout link to the bottom */
 }
 
 /* Responsive Styles */
