@@ -32,12 +32,14 @@
       <!-- Pengeluaran Belanja link -->
       <li><router-link to="/pengeluaran/belanja" class="nav-link">Pengeluaran Belanja</router-link></li>
       <!-- Logout link -->
-      <li><router-link to="/logout" class="nav-link">Logout</router-link></li>
+      <li><a href="#" @click="logout" class="nav-link">Logout</a></li>
     </ul>
   </nav>
 </template>
 
 <script>
+import LogoutUser from '../lib/API/Auth/LogoutUser'; // Import LogoutUser class
+
 export default {
   name: "Navbar",
   data() {
@@ -53,6 +55,21 @@ export default {
     toggleTransactionDropdown() {
       this.isTransactionDropdownVisible = !this.isTransactionDropdownVisible; // Toggle the Laporan Transaksi dropdown menu
     },
+    async logout() {
+      try {
+        // Call the logout method to invalidate the token
+        const response = await LogoutUser.Logout(); 
+
+        // Optionally, redirect to the login page
+        this.$router.push('/'); // Navigate to login page after logout
+
+        // Show a success message
+        alert(response.message || 'Successfully logged out');
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('An error occurred while logging out.');
+      }
+    }
   },
 };
 </script>

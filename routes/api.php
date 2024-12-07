@@ -18,17 +18,20 @@ Route::prefix('auth')->group(function () {
 
     // Rute register
     Route::post('register', [RegisterController::class, 'register'])->name('register');
+    Route::patch('register/{id}', [RegisterController::class, 'update'])->name('update');
+    Route::delete('register/{id}', [RegisterController::class, 'deleteUser'])->name('delete');
+
+
 
     // Rute logout
-    Route::post('logout', [LogoutController::class, 'logout'])->name('logout')->middleware('auth.jwt');
+    Route::delete('logout', [LogoutController::class, 'logout'])->name('logout');
 });
+
+Route::get('/admin/users', [UserController::class, 'index'])->name('users.store');  // Menambahkan user baru
 
 Route::prefix('admin')->middleware('auth.jwt')->group(function () {
     // Manajemen User
-    Route::post('users', [UserController::class, 'store'])->name('users.store');  // Menambahkan user baru
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show'); // Menampilkan detail user
-    Route::patch('users/{id}', [UserController::class, 'update'])->name('users.update'); // Mengupdate user
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy'); // Menghapus user
 
     // Manajemen Menu
     Route::post('menus', [MenuController::class, 'store'])->name('menus.store');  // Menambahkan menu baru
