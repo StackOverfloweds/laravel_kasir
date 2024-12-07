@@ -1,0 +1,163 @@
+<template>
+  <nav class="navbar">
+    <div class="logo-container">
+      <img src="../assets/logo.png" alt="Logo" class="logo" />
+      <span class="admin-name">Admin</span>
+    </div>
+    <ul class="nav-links">
+      <!-- Dashboard link -->
+      <li><router-link to="/dashboard" class="nav-link">Dashboard</router-link></li>
+
+      <!-- Master Data Dropdown -->
+      <li class="dropdown">
+        <a href="#" class="nav-link dropdown-toggle" @click="toggleDropdown">Master Data</a>
+        <ul v-if="isDropdownVisible" class="dropdown-menu">
+          <!-- Master Data sublinks -->
+          <li><router-link to="/master-data/admin" class="nav-link">Data Pegawai</router-link></li>
+          <li><router-link to="/master-data/category" class="nav-link">Data Kategori</router-link></li>
+          <li><router-link to="/master-data/menu" class="nav-link">Data Menu</router-link></li>
+        </ul>
+      </li>
+
+      <!-- Laporan Transaksi Dropdown -->
+      <li class="dropdown">
+        <a href="#" class="nav-link dropdown-toggle" @click="toggleTransactionDropdown">Laporan Transaksi</a>
+        <ul v-if="isTransactionDropdownVisible" class="dropdown-menu">
+          <!-- Laporan Transaksi sublinks -->
+          <li><router-link to="/laporan-transaksi/penjualan" class="nav-link">Transaksi Penjualan</router-link></li>
+          <li><router-link to="/transaksi/belanja" class="nav-link">Transaksi Belanja</router-link></li>
+        </ul>
+      </li>
+
+      <!-- Pengeluaran Belanja link -->
+      <li><router-link to="/pengeluaran/belanja" class="nav-link">Pengeluaran Belanja</router-link></li>
+      <!-- Logout link -->
+      <li><router-link to="/logout" class="nav-link">Logout</router-link></li>
+    </ul>
+  </nav>
+</template>
+
+<script>
+export default {
+  name: "Navbar",
+  data() {
+    return {
+      isDropdownVisible: false, // Track the visibility of the Master Data dropdown
+      isTransactionDropdownVisible: false, // Track the visibility of the Transaksi dropdown
+    };
+  },
+  methods: {
+    toggleDropdown() {
+      this.isDropdownVisible = !this.isDropdownVisible; // Toggle the Master Data dropdown menu
+    },
+    toggleTransactionDropdown() {
+      this.isTransactionDropdownVisible = !this.isTransactionDropdownVisible; // Toggle the Laporan Transaksi dropdown menu
+    },
+  },
+};
+</script>
+
+<style scoped>
+.navbar {
+  background-color: #f1f1f1;
+  width: 250px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.admin-name {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.nav-links {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav-link {
+  display: block;
+  color: #333;
+  padding: 10px;
+  text-decoration: none;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #ddd;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: block;
+  position: absolute;
+  top: 40px; /* Adjust based on your design */
+  left: 0;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  width: 100%;
+}
+
+.dropdown-menu .nav-link {
+  padding-left: 20px; /* Indentation for submenu items */
+}
+
+.dropdown-menu .nav-link:hover {
+  background-color: #e6e6e6;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navbar {
+    width: 100%; /* Full width on small screens */
+    padding: 10px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .admin-name {
+    font-size: 12px;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    padding: 5px 0;
+  }
+
+  .nav-link {
+    padding: 8px 10px;
+  }
+}
+</style>
