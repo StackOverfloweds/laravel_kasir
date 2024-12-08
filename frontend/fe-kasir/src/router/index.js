@@ -15,6 +15,9 @@ import TransaksiPenjualan from "../views/Admin/Transaksi/TransaksiPenjualan.vue"
 import DashboardKasir from "../views/Kasir/DashboardKasir.vue"
 import TransaksiPesanan from "../views/Kasir/Transaksi_Pesanan/TransaksiPesanan.vue"
 
+// Import Not Available Page
+import NotAvailable from '../views/NotAvailable.vue'
+
 // Define Routes
 const routes = [
   // Login route (this will be the root route)
@@ -80,10 +83,17 @@ const routes = [
     meta: { requiresAuth: true, role: 'kasir' }, // Protected route for kasir
   },
 
-  // Optionally, redirect any unknown routes to login
+  // Route to show when accessing unavailable routes
+  {
+    path: '/not-available',
+    name: 'NotAvailable',
+    component: NotAvailable, // Show this when route doesn't exist
+  },
+
+  // Catch-all route for undefined paths
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/', // If route doesn't match, redirect to login page
+    redirect: '/not-available', // Redirect to "Not Available" page for undefined routes
   }
 ]
 
