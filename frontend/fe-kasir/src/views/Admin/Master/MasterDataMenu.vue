@@ -1,186 +1,176 @@
 <template>
   <div class="wrapper d-flex">
-    <!-- Sidebar (Navbar) -->
-    <Navbar />
+      <!-- Sidebar (Navbar) -->
+      <Navbar />
 
-    <!-- Main Content Area -->
-    <div class="content flex-grow-1 mt-5">
-      <div class="container">
-        <h2>Pengeluaran Belanja</h2>
-        <button class="btn btn-primary mb-3" @click="showAddExpenseForm">
-          Tambah Bahan Belanja
-        </button>
+      <!-- Main Content Area -->
+      <div class="content flex-grow-1 mt-5">
+          <div class="container">
+              <h2>Data Menu</h2>
+              <button class="btn btn-primary mb-3" @click="showAddMenuForm">
+                  Tambah Menu
+              </button>
 
-        <!-- Conditionally Rendered Form for Adding Item -->
-        <div v-if="isAddingExpense" class="mb-4">
-          <h3>Tambah Bahan Belanja</h3>
-          <form @submit.prevent="addExpense">
-            <div class="mb-3">
-              <label for="itemName" class="form-label">Nama Bahan</label>
-              <input
-                type="text"
-                class="form-control"
-                id="itemName"
-                v-model="newExpense.name"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="itemQuantity" class="form-label">Jumlah Bahan</label>
-              <input
-                type="number"
-                class="form-control"
-                id="itemQuantity"
-                v-model="newExpense.quantity"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="itemPrice" class="form-label">Harga per Bahan</label>
-              <input
-                type="number"
-                class="form-control"
-                id="itemPrice"
-                v-model="newExpense.price"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="expenseDate" class="form-label">Tanggal Belanja</label>
-              <input
-                type="date"
-                class="form-control"
-                id="expenseDate"
-                v-model="newExpense.date"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-success">Tambah Belanja</button>
-            <button type="button" class="btn btn-secondary ms-2" @click="cancelAddExpense">
-              Batal
-            </button>
-          </form>
-        </div>
+              <!-- Conditionally Rendered Form -->
+              <div v-if="isAddingMenu" class="mb-4">
+                  <h3>{{ newMenu.id ? "Edit Menu" : "Tambah Menu" }}</h3>
+                  <form @submit.prevent="saveMenu">
+                      <div class="mb-3">
+                          <label for="menuName" class="form-label">Nama Menu</label>
+                          <input
+                              type="text"
+                              class="form-control"
+                              id="menuName"
+                              v-model="newMenu.name"
+                              required
+                          />
+                      </div>
+                      <div class="mb-3">
+                          <label for="category" class="form-label">Kategori</label>
+                          <input
+                              type="text"
+                              class="form-control"
+                              id="category"
+                              v-model="newMenu.category"
+                              required
+                          />
+                      </div>
+                      <div class="mb-3">
+                          <label for="price" class="form-label">Harga</label>
+                          <input
+                              type="number"
+                              class="form-control"
+                              id="price"
+                              v-model="newMenu.price"
+                              required
+                          />
+                      </div>
+                      <div class="mb-3">
+                          <label for="description" class="form-label">Deskripsi</label>
+                          <textarea
+                              class="form-control"
+                              id="description"
+                              v-model="newMenu.description"
+                              required
+                          ></textarea>
+                      </div>
 
-        <!-- Table of Expenses -->
-        <table class="table table-striped" v-if="!isAddingExpense">
-          <thead>
-            <tr>
-              <th>Tanggal</th>
-              <th>Nama Bahan</th>
-              <th>Jumlah</th>
-              <th>Harga</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="expense in expenses" :key="expense.id">
-              <td>{{ expense.date }}</td>
-              <td>{{ expense.name }}</td>
-              <td>{{ expense.quantity }}</td>
-              <td>{{ expense.price | currency }}</td>
-              <td>
-                <button class="btn btn-warning" @click="editExpense(expense.id)">
-                  Edit
-                </button>
-                <button class="btn btn-danger" @click="deleteExpense(expense.id)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                      <div class="mb-3">
+                          <label for="image" class="form-label">Gambar</label>
+                          <input
+                              type="file"
+                              class="form-control"
+                              id="image"
+                              @change="handleImageUpload"
+                          />
+                          <p v-if="newMenu.image">{{ newMenu.image.name }}</p>
+                      </div>
+
+                      <button type="submit" class="btn btn-success">
+                          {{ newMenu.id ? "Update" : "Tambah" }} Menu
+                      </button>
+                      <button
+                          type="button"
+                          class="btn btn-secondary ms-2"
+                          @click="cancelAddMenu"
+                      >
+                          Batal
+                      </button>
+                  </form>
+              </div>
+
+              <!-- Table of Menus -->
+              <table class="table table-striped" v-if="!isAddingMenu">
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Nama Menu</th>
+                          <th>Kategori</th>
+                          <th>Harga</th>
+                          <th>Deskripsi</th>
+                          <th>Gambar</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="menu in menus" :key="menu.id">
+                          <td>{{ menu.id }}</td>
+                          <td>{{ menu.name }}</td>
+                          <td>{{ menu.category }}</td>
+                          <td>{{ menu.price }}</td>
+                          <td>{{ menu.description }}</td>
+                          <td>
+                              <img
+                                  :src="menu.image_url"
+                                  alt="Image"
+                                  width="50"
+                              />
+                          </td>
+                          <td>
+                              <button
+                                  class="btn btn-danger"
+                                  @click="deleteMenu(menu.id)"
+                              >
+                                  Delete
+                              </button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
       </div>
-    </div>
   </div>
 </template>
 
+
 <script>
+// Import the JavaScript logic from the separate file
+import MasterDataMenuLogic from "../../../lib/API/Master/MasterDataMenu";
 import Navbar from "../../../components/Navbar.vue";
-import { PengeluaranBelanjaLogic } from "../../../lib/API/Pengeluaran/PengeluaranBelanja";
 
 export default {
-  name: "PengeluaranBelanja",
-  components: {
-    Navbar,
-  },
-  data() {
-    return {
-      expenses: [], // Now, expenses will be fetched from the backend
-      newExpense: {
-        name: "",
-        quantity: 0,
-        price: 0,
-        date: "",
-      },
-      isAddingExpense: false, // Flag to toggle form visibility
-    };
-  },
-  methods: {
-    showAddExpenseForm() {
-      PengeluaranBelanjaLogic.showAddExpenseForm(this);
+    name: "MasterDataMenu",
+    components: {
+        Navbar,
     },
-    cancelAddExpense() {
-      PengeluaranBelanjaLogic.cancelAddExpense(this);
-    },
-    addExpense() {
-      PengeluaranBelanjaLogic.addExpense(this);
-    },
-    resetNewExpense() {
-      PengeluaranBelanjaLogic.resetNewExpense(this);
-    },
-    editExpense(id) {
-      PengeluaranBelanjaLogic.editExpense(id, this);
-    },
-    deleteExpense(id) {
-      PengeluaranBelanjaLogic.deleteExpense(this, id);
-    },
-  },
-  filters: {
-    currency(value) {
-      return PengeluaranBelanjaLogic.currency(value);
-    },
-  },
-  created() {
-    PengeluaranBelanjaLogic.setupData(this); // Fetch expenses from the API when the component is created
-  },
+    mixins: [MasterDataMenuLogic], // Mixin the JS logic into this component
 };
 </script>
 
 <style scoped>
 /* Wrapper for layout: navbar and content side by side */
 .wrapper {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
+    min-height: 100vh;
 }
 
 /* Main content styling */
 .content {
-  padding-left: 20px;
-  padding-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* Make sure the table takes full width */
 table {
-  width: 100%;
+    width: 100%;
 }
 
 /* Adjust button width to make it not too long */
 button {
-  width: auto; /* Let the button take only the required space */
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-right: 10px; /* Add space between buttons */
+    width: auto; /* Let the button take only the required space */
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 10px; /* Add space between buttons */
 }
 
 /* Adjust styling for form buttons */
 .btn-secondary {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 /* Adjust modal styling */
 .modal-content {
-  max-width: 500px;
-  margin: 0 auto;
+    max-width: 500px;
+    margin: 0 auto;
 }
 </style>

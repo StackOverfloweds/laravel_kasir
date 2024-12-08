@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
       <div class="login-box">
-          <h2>Login POSMate</h2>
+          <h2>Login</h2>
           <form @submit.prevent="handleLogin">
               <div class="input-container">
                   <label for="username">Username</label>
@@ -53,6 +53,7 @@ export default {
               // Assuming the response contains a token and user details
               if (response.token) {
                   console.log("Login successful:", response);
+                  console.log(sessionStorage.getItem('user'));
                   alert(`Login Success`);
                   // Optionally, redirect to another page
                   this.$router.push("/dashboard");

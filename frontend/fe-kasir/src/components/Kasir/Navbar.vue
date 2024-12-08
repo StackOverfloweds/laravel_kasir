@@ -1,35 +1,12 @@
 <template>
   <nav class="navbar">
     <div class="logo-container">
-      <img src="../assets/logo.png" alt="Logo" class="logo" />
-      <span class="admin-name">Admin</span>
+      <img src="../../assets/logo.png" alt="Logo" class="logo" />
+      <span class="admin-name">Kasir</span>
     </div>
     <ul class="nav-links">
-      <!-- Dashboard link -->
-      <li><router-link to="/dashboard" class="nav-link">Dashboard</router-link></li>
-
-      <!-- Master Data Dropdown -->
-      <li class="dropdown">
-        <a href="#" class="nav-link dropdown-toggle" @click="toggleDropdown">Master Data</a>
-        <ul v-if="isDropdownVisible" class="dropdown-menu">
-          <!-- Master Data sublinks -->
-          <li><router-link to="/master-data/admin" class="nav-link">Data Pegawai</router-link></li>
-          <li><router-link to="/master-data/menu" class="nav-link">Data Menu</router-link></li>
-        </ul>
-      </li>
-
-      <!-- Laporan Transaksi Dropdown -->
-      <li class="dropdown">
-        <a href="#" class="nav-link dropdown-toggle" @click="toggleTransactionDropdown">Laporan Transaksi</a>
-        <ul v-if="isTransactionDropdownVisible" class="dropdown-menu">
-          <!-- Laporan Transaksi sublinks -->
-          <li><router-link to="/transaksi/Penjualan" class="nav-link">Transaksi Penjualan</router-link></li>
-          <li><router-link to="/transaksi/belanja" class="nav-link">Transaksi Belanja</router-link></li>
-        </ul>
-      </li>
-
-      <!-- Pengeluaran Belanja link -->
-      <li><router-link to="/pengeluaran/belanja" class="nav-link">Pengeluaran Belanja</router-link></li>
+<!-- 
+      <li><router-link to="/Kasir/Transaksi_Pesanan" class="nav-link">Transaksi Pesanan</router-link></li> -->
       <!-- Logout link -->
       <li><a href="#" @click="logout" class="nav-link">Logout</a></li>
     </ul>
@@ -37,7 +14,7 @@
 </template>
 
 <script>
-import LogoutUser from '../lib/API/Auth/LogoutUser'; // Import LogoutUser class
+import LogoutUser from '../../lib/API/Auth/LogoutUser'; // Import LogoutUser class
 
 export default {
   name: "Navbar",

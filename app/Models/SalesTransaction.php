@@ -11,8 +11,15 @@ class SalesTransaction extends Model
 {
     use HasFactory;
 
+    protected $table = "sales_transactions";
+
     protected $fillable = [
-        'transaction_date', 'user_id', 'total_amount'
+        'transaction_date',
+        'user_id',
+        'menu_id',
+        'total_amount',
+        'payment_method',
+        'quantity'
     ];
 
     public function user()
@@ -20,8 +27,9 @@ class SalesTransaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function menus()
+    // Correct the relationship to belong to one menu
+    public function menu()
     {
-        return $this->belongsToMany(Menu::class);
+        return $this->belongsTo(Menu::class);  // Fix here: changed from belongsToMany to belongsTo
     }
 }
