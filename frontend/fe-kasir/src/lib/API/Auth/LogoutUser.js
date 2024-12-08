@@ -16,7 +16,8 @@ export default class LogoutUser  {
                 });
 
                   // If logout is successful, clear the session storage
-                sessionStorage.removeItem('authToken'); // Remove the token from sessionStorage
+                  sessionStorage.removeItem('authToken'); // Remove the token from sessionStorage
+                  sessionStorage.removeItem('user'); // Remove the token from sessionStorage
 
                 // Redirect the user to the login page
                 return response.data; // Return the user and token

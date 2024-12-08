@@ -48,9 +48,9 @@ Route::prefix('admin')->group(function () {
     Route::delete('sales-reports/{id}', [SalesReportController::class, 'destroy'])->name('sales-reports.destroy'); // Menghapus laporan penjualan
 
     // Manajemen Transaksi Penjualan
+    Route::get('sales-transactions', [SalesTransactionController::class, 'index'])->name('sales-transactions.index'); // Menampilkan transaksi penjualan
     Route::post('sales-transactions', [SalesTransactionController::class, 'store'])->name('sales-transactions.store');  // Menambahkan transaksi penjualan
     Route::get('sales-transactions/{id}', [SalesTransactionController::class, 'show'])->name('sales-transactions.show'); // Menampilkan transaksi penjualan
-    Route::patch('sales-transactions/{id}', [SalesTransactionController::class, 'update'])->name('sales-transactions.update'); // Mengupdate transaksi penjualan
     Route::delete('sales-transactions/{id}', [SalesTransactionController::class, 'destroy'])->name('sales-transactions.destroy'); // Menghapus transaksi penjualan
 
     Route::prefix('pengeluaran-belanja')->group(function () {

@@ -10,17 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::create('sales_transactions', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained('users'); // Pengguna yang melakukan transaksi
-        $table->foreignId('menu_id')->constrained('menus'); // Menu yang dibeli
-        $table->integer('quantity'); // Jumlah menu yang dibeli
-        $table->decimal('total_amount', 15, 2); // Total transaksi
-        $table->timestamps();
-    });
-}
-
+    {
+        Schema::create('sales_transactions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users'); // Pengguna yang melakukan transaksi
+            $table->foreignId('menu_id')->constrained('menus'); // Menu yang dibeli
+            $table->integer('quantity'); // Jumlah menu yang dibeli
+            $table->decimal('total_amount', 15, 2); // Total transaksi
+            $table->string("payment_method");
+            $table->date('transaction_date'); // Menambahkan kolom transaction_date
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
